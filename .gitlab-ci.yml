@@ -22,7 +22,5 @@ build_job:
         for version in 8.0 8.1 8.2; do
           docker build -t $GITLAB_IMAGE:$version -f $version/Dockerfile .
           docker push $GITLAB_IMAGE:$version
-#          docker tag $GITLAB_IMAGE:$version $DOCKERHUB_IMAGE:$version
-#          docker push $DOCKERHUB_IMAGE:$version
         done
       fi

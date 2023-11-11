@@ -19,10 +19,10 @@ build_job:
   script:
     - >
       if [[ "$CI_COMMIT_BRANCH" == "main" ]]; then
-        for tag in latest stable 8.2 8.1 8.0; do
-          docker build -t $GITLAB_IMAGE:$tag --build-arg PHP_VERSION=$(echo $tag | grep -oE '[0-9]+\.[0-9]+') .
-          docker push $GITLAB_IMAGE:$tag
-          docker tag $GITLAB_IMAGE:$tag $DOCKERHUB_IMAGE:$tag
-          docker push $DOCKERHUB_IMAGE:$tag
+        for version in 8.0 8.1 8.2; do
+          docker build -t $GITLAB_IMAGE:$version -f $version/Dockerfile .
+          docker push $GITLAB_IMAGE:$version
+          docker tag $GITLAB_IMAGE:$version $DOCKERHUB_IMAGE:$version
+          docker push $DOCKERHUB_IMAGE:$version
         done
       fi

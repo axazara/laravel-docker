@@ -19,7 +19,7 @@ build_job:
   script:
     - >
       if [[ "$CI_COMMIT_BRANCH" == "main" ]]; then
-        for version in 8.0 8.1 8.2; do
+        for version in 8.0 8.1 8.2 8.3; do
           docker build -t $GITLAB_IMAGE:$version -f $version/Dockerfile .
           docker push $GITLAB_IMAGE:$version
         done

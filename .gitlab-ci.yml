@@ -6,8 +6,7 @@ variables:
   GITLAB_IMAGE: "$CI_REGISTRY_IMAGE/$IMAGE_NAME"
   DOCKERHUB_IMAGE: "$DOCKERHUB_USERNAME/$IMAGE_NAME"
 
-build_job:
-  stage: build
+.docker_template: &docker_template
   image: docker:latest
   services:
     - docker:dind
@@ -16,11 +15,33 @@ build_job:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     #- docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+  only:
+    - main
+
+build_PHP_8_0_image:
+  <<: *docker_template
+  stage: build
   script:
-    - >
-      if [[ "$CI_COMMIT_BRANCH" == "main" ]]; then
-        for version in 8.0 8.1 8.2 8.3; do
-          docker build -t $GITLAB_IMAGE:$version -f $version/Dockerfile .
-          docker push $GITLAB_IMAGE:$version
-        done
-      fi
+    - docker build -t $GITLAB_IMAGE:8.0 -f 8.0/Dockerfile .
+    - docker push $GITLAB_IMAGE:8.0
+
+build_PHP_8_1_image:
+  <<: *docker_template
+  stage: build
+  script:
+    - docker build -t $GITLAB_IMAGE:8.1 -f 8.1/Dockerfile .
+    - docker push $GITLAB_IMAGE:8.1
+
+build_PHP_8_2_image:
+  <<: *docker_template
+  stage: build
+  script:
+    - docker build -t $GITLAB_IMAGE:8.2 -f 8.2/Dockerfile .
+    - docker push $GITLAB_IMAGE:8.2
+
+build_PHP_8_3_image:
+  <<: *docker_template
+  stage: build
+  script:
+    - docker build -t $GITLAB_IMAGE:8.3 -f 8.3/Dockerfile .
+    - docker push $GITLAB_IMAGE:8.3

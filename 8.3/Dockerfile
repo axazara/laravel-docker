@@ -7,7 +7,7 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN apk add --no-cache \
     bash \
     curl \
-    freetype-dev \
+    freetype \
     g++ \
     gcc \
     git \
@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     libpng-dev \
     freetype-dev \
     libjpeg-turbo-dev \
+    sqlite \
     sqlite-dev \
     libzip-dev \
     make \
@@ -29,7 +30,21 @@ RUN apk add --no-cache \
     openssh-client \
     postgresql-libs \
     rsync \
-    zlib-dev
+    zlib-dev \
+    gcompat \
+    libstdc++ \
+    nss \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    fontconfig \
+    dbus \
+    chromium \
+    chromium-chromedriver \
+    ruby  \
+    ruby-dev  \
+    ruby-bigdecimal  \
+    build-base
 
 # Install php extensions
 RUN chmod +x /usr/local/bin/install-php-extensions && \

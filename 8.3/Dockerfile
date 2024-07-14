@@ -4,7 +4,7 @@ FROM php:8.3.9-alpine
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 # Install dependencies
-RUN apk --update --no-cache \
+RUN apk add --update --no-cache \
     bash \
     curl \
     freetype \

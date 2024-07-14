@@ -22,57 +22,25 @@ build_PHP_8_0_image:
   stage: build
   script:
     - docker build -t $GITLAB_IMAGE:8.0 -f 8.0/Dockerfile .
-
-publish_PHP_8_0_image:
-  <<: *docker_template
-  stage: publish
-  script:
-    - docker build -t $GITLAB_IMAGE:8.0 -f 8.0/Dockerfile .
-    - docker push $GITLAB_IMAGE:8.0
-  only:
-    - main
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.0; fi
 
 build_PHP_8_1_image:
   <<: *docker_template
   stage: build
   script:
     - docker build -t $GITLAB_IMAGE:8.1 -f 8.1/Dockerfile .
-
-publish_PHP_8_1_image:
-  <<: *docker_template
-  stage: publish
-  script:
-    - docker build -t $GITLAB_IMAGE:8.1 -f 8.1/Dockerfile .
-    - docker push $GITLAB_IMAGE:8.1
-  only:
-    - main
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.1; fi
 
 build_PHP_8_2_image:
   <<: *docker_template
   stage: build
   script:
     - docker build -t $GITLAB_IMAGE:8.2 -f 8.2/Dockerfile .
-
-publish_PHP_8_2_image:
-  <<: *docker_template
-  stage: publish
-  script:
-    - docker build -t $GITLAB_IMAGE:8.2 -f 8.2/Dockerfile .
-    - docker push $GITLAB_IMAGE:8.2
-  only:
-    - main
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.2; fi
 
 build_PHP_8_3_image:
   <<: *docker_template
   stage: build
   script:
     - docker build -t $GITLAB_IMAGE:8.3 -f 8.3/Dockerfile .
-
-publish_PHP_8_3_image:
-  <<: *docker_template
-  stage: publish
-  script:
-    - docker build -t $GITLAB_IMAGE:8.3 -f 8.3/Dockerfile .
-    - docker push $GITLAB_IMAGE:8.3
-  only:
-    - main
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.3; fi

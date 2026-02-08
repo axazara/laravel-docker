@@ -44,3 +44,10 @@ build_PHP_8_3_image:
   script:
     - docker build -t $GITLAB_IMAGE:8.3 -f 8.3/Dockerfile .
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.3; fi
+
+build_PHP_8_4_image:
+  <<: *docker_template
+  stage: build
+  script:
+    - docker build -t $GITLAB_IMAGE:8.4 -f 8.4/Dockerfile .
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then docker push $GITLAB_IMAGE:8.4; fi

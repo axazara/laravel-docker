@@ -2,6 +2,67 @@
 
 Guidance for Claude Code and other AI agents working in this repository.
 
+## Project overview
+
+This repository provides generic Docker base images for Laravel applications, published as `axazaracoredev/laravel-docker` on Docker Hub and `ghcr.io/axazara/laravel-docker` on GitHub Container Registry. Each top-level directory (`8.0`–`8.4`) contains a self-contained `Dockerfile` built on the official `php:<version>-alpine` base. The images are consumed by Laravel projects running their CI/CD pipelines (especially GitLab CI) or containerized deployments.
+
+## Tech stack
+
+- Base OS: Alpine Linux (via `php:<version>-alpine` official images)
+- PHP versions: 8.0, 8.1, 8.2, 8.3, 8.4 (one Dockerfile per version directory)
+- Composer 2 (installed via `docker-php-extension-installer`)
+- Node.js + npm + Yarn (Alpine packages)
+- PHP extensions: redis, imagick, xdebug, bcmath, calendar, exif, gd, intl, pdo_mysql, pdo_pgsql, pcntl, soap, zip, sockets, gettext, shmop, sysvmsg, swoole (8.2+)
+- PHP_CodeSniffer (globally installed via Composer in each image)
+- Chromium + ChromeDriver (for browser testing)
+- Database clients: mysql-client, postgresql-libs, sqlite
+
+## Getting started
+
+```bash
+# Build a specific PHP version image locally
+docker build -t laravel-docker:8.4 -f 8.4/Dockerfile .
+
+# Build all versions
+for v in 8.0 8.1 8.2 8.3 8.4; do
+  docker build -t laravel-docker:$v -f $v/Dockerfile .
+done
+```
+
+## Common commands
+
+| Task | Command |
+|---|---|
+| Build image (single version) | `docker build -t laravel-docker:8.4 -f 8.4/Dockerfile .` |
+| Run a container interactively | `docker run --rm -it laravel-docker:8.4 bash` |
+| Run PHPUnit in CI (via image) | `phpunit --coverage-text --colors=never` |
+| Check code style in CI | `phpcs --standard=PSR2 --extensions=php app` |
+
+## Architecture
+
+The repository is structured as one directory per supported PHP version, each containing an independent `Dockerfile`:
+
+- `8.0/Dockerfile` — PHP 8.0 Alpine image
+- `8.1/Dockerfile` — PHP 8.1 Alpine image
+- `8.2/Dockerfile` — PHP 8.2 Alpine image
+- `8.3/Dockerfile` — PHP 8.3 Alpine image (pinned to `8.3.9-alpine`)
+- `8.4/Dockerfile` — PHP 8.4 Alpine image (latest stable, tagged `stable` and `latest`)
+- `.github/workflows/ci.yml` — builds all five versions in a matrix on every push/PR, pushes to GHCR on `main`
+- `.github/workflows/packages.yml` — legacy workflow that also pushes to Docker Hub
+- `gitlab/.gitlab-ci.tests.yml` — reusable GitLab CI snippet for running PHPUnit + PSR2 codestyle in a Laravel project
+- `gitlab/.gitlab-ci.deployments.yml` — reusable GitLab CI snippet covering build, test, and SSH-based deployment stages for Laravel projects
+
+CI runs on GitHub Actions with a matrix strategy (`fail-fast: false`) so a broken single-version build does not block others.
+
+## Conventions
+
+- Each PHP version directory is fully self-contained; changes to extensions or system packages must be applied to each `Dockerfile` individually.
+- PHP_CodeSniffer is always globally installed at image build time so `phpcs` is available on `$PATH` without a project-level install.
+- The `WORKDIR` is always `/var/www` — mount Laravel project source there when running containers.
+- `./vendor/bin`, `/composer/vendor/bin`, and `/root/.composer/vendor/bin` are all on `$PATH` by default.
+- The `8.0/Dockerfile` is named `8.0` but currently based on `php:8.5.6-alpine` (appears to be a branch mislabel); verify before relying on the exact base version.
+- Images are pushed only on commits to `main`; PRs trigger build-only (no push).
+
 ## Git Conventions
 
 ### 1. Branch names
